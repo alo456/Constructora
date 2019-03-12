@@ -1,0 +1,28 @@
+<h1> Cotización </h1>
+        {#
+        <p> Cliente : {{ datos.nombre ~ datos.apellidos }} </p> 
+        <p> Telefono : {{ datos.telefono }} </p> 
+        <p> Direcction : {{ datos.direccion }} </p>  #}
+        <table border="1">
+            <thead>
+            <th>Cantidad</th>
+            <th>Producto o Servicio</th>
+            <th>Precio Unitario</th>
+            <th>Precio Subtotal</th>
+            </thead>
+            <tbody>
+            
+            {% for producto in productos %}
+                <tr>
+                    <td>{{producto.cantidad}}</td>
+                    <td>{{producto.producto}}</td>
+                    <td>{{producto.preciounidad}}</td>
+                    <td>{{producto.subtotal}}</td>
+                    
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <h4> Envio : {{ envio }} </h4>
+        <h3> Total : {{ total }} </h3> 
+

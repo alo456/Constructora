@@ -1,0 +1,20 @@
+App\Entity\Recurso:
+    type: entity
+    table: Recurso
+    oneToMany:
+        orden:
+            targetEntity: App\Entity\RecursosPorOrden
+            mappedBy: recurso 
+    id:
+        id:
+            type: guid
+            id: true
+            generate:
+                strategy: UUID
+    fields: 
+            nombre:
+                type: string
+                length: 255
+            precio:
+                type: float
+                

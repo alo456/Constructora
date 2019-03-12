@@ -1,0 +1,20 @@
+App\Entity\Servicio:
+    type: entity
+    table: Servicio
+    oneToMany:
+        orden:
+            targetEntity: App\Entity\ServiciosPorOrden
+            mappedBy: servicio
+    id:
+        id:
+            type: guid
+            id: true
+            generate:
+                strategy: UUID
+    fields: 
+            nombre:
+                type: string
+                length: 255
+            precio:
+                type: float
+                

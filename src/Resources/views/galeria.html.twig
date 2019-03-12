@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Galeria
+{% endblock %}
+{% block body %}
+
+    <table>
+        <tbody>
+            <tr>
+         
+            {% for servicio in servicios %}
+                {% if loop.index is divisible by(3) %}
+                    </tr>
+                    <tr>
+                {% endif %}
+                <td>
+                    <img src="img/{{servicio.id}}.jpg"  >
+                    <p>{{ servicio.nombre }}  </p>
+                </td>
+            {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

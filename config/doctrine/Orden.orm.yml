@@ -1,0 +1,41 @@
+App\Entity\Orden:
+    type: entity
+    table: Orden
+    manyToOne:
+        cliente:
+            targetEntity: App\Entity\Cliente
+            inversedBy: ordenes
+            joinColumn:
+                name: cliente_id
+                referencedColumnName: id
+    oneToMany:
+        servicios:
+            targetEntity: App\Entity\ServiciosPorOrden
+            mappedBy: orden 
+            
+        recursos:
+            targetEntity: App\Entity\RecursosPorOrden
+            mappedBy: orden 
+            
+        envios:
+            targetEntity: App\Entity\EnviosPorOrden
+            mappedBy: orden 
+    id:
+        id:
+            type: guid
+            id: true
+            generate:
+                strategy: UUID
+    fields: 
+            fecha:
+                type: datetime
+                length: 255
+            precioNeto:
+                type: float
+            descuento:
+                type: float 
+                nullable: true
+            pago:
+                type: string
+                length: 255
+                nullable: true

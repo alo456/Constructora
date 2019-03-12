@@ -1,0 +1,201 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    Cotizador
+{% endblock %}
+{% block body %}
+    <h1> Cotizador </h1>
+    <div  >
+        {% form_theme formCotizacion 'bootstrap_4_horizontal_layout.html.twig' 'producto_theme.html.twig' %}
+        {{ form_start(formCotizacion, {'attr': {'id': 'formCotizacion'}}) }}
+        <div id= "sas" data-cot="{{datos}}">{{form_widget(formCotizacion)}}</div>
+        <hr/>
+        
+        
+        {{ form_end(formCotizacion) }}
+    </div>
+    
+    {% if mensaje is not empty %}
+        <p> {{ mensaje }}
+    {% endif %}
+       
+
+    <div id="mail" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Ingresa tus datos para poder enviar la cotización</h2>
+            </div>
+            <div class="modal-body">
+                {{ form_start(formDatos) }}
+                {{ form_end(formDatos) }}
+            </div>
+        </div>
+
+    </div>
+            
+    <div id="efectivo" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Ingresa tus datos para realizar el pago en Efectivo</h2>
+            </div>
+            <div class="modal-body">
+                {{ form_start(formEfectivo) }}
+                {{ form_end(formEfectivo) }}
+            </div>
+        </div>
+
+    </div>
+        
+    <div id="pago" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Selecciona la forma de Pago</h2>
+            </div>
+            <div class="modal-body">
+                <button type="submit" id="befectivo">Efectivo</button>
+                
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                    <!-- Identify your business so that you can collect the payments. -->
+                    <input type="hidden" name="business" value="victorcv017@gmail.com"> <!-- Add your PayPal Seller/Business email address Required-->
+                    <!-- Specify a Buy Now button. -->
+                    <input type="hidden" name="cmd" value="_xclick">
+                    <!-- Specify details about the item that buyers will purchase. -->
+                    <input type="hidden" name="item_name" value="Constructora"> <!-- Add Description e.g your room type Required-->
+                    <input type="hidden" name="amount" > <!-- Dynamically add Total Amount Required-->
+                    <input type="hidden" name="currency_code" value="MXN"> <!-- Update to your currency -->
+                    <input id="invoice" type="hidden" value="" name="invoice"> <!-- Add Unique invoice for each transaction -->
+                    <input type="hidden" name="notify_url" value="www.yourwebsite.com/ipn.php"> <!-- Please add IPN URL You can use this service to automate back-office and administrative functions, including fulfilling orders, tracking customers, and providing status and other information related to transactions. -->
+                    <input type='hidden' name='cancel_return' value='http://localhost/construrama/public/cotizador' /> <!-- Take customers to this URL when they cancel their checkout -->
+                    <input type='hidden' name='return' value='http://localhost/construrama/public/cotizador' /> <!-- Take customers to this URL when they finish their checkout  -->
+                    <!-- Display the payment button. -->
+                    <input type="image" name="submit" target="_blank" border="0" src="https://www.paypalobjects.com/digitalassets/c/NA/web/canvas/paypal-checkout/PayPal-button.png" alt="PayPal - The safer, easier way to pay online">
+                </form>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+{% block stylesheets %}
+    <link href="{{asset('css/style.css')}}" rel="stylesheet">
+{% endblock %}
+{% block javascripts %}
+    <script src="{{asset('js/jquery.min.js')}}"></script>
+    <script src="{{asset('js/jquery.collection.js')}}"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $("[data-cot]").each(function(){
+        var data = $(this).attr('data-cot');
+                data = JSON.parse(data);
+                $(this).attr('data-cot', null);
+                $(this).data('data', data);
+                console.log($(this).data());
+        })});
+        $('.producto-collection').collection({
+            allow_duplicate: false,
+            allow_up: false,
+            allow_down: false,
+            after_add: function (collection, element) {
+                $(element).find('input.cantidad').keyup(function(e){
+                    var data = $(element).parent().parent().parent().parent().parent().parent().parent().parent().parent().data('data');
+                    var value = $(this).parent().parent().find('input.preciounidad').val();
+                    if(!isNaN($(this).val()) && !isNaN(value)){
+                        $(this).parent().parent().find('input.subtotal').val(value*$(this).val());
+                    }
+                });
+               $(element).find('select').change(function(e){
+                   /*console.log($(this).attr('name').replace('producto]',$(this).find(':selected').text())+']');
+                   var name = $(this).attr('name').replace('producto]',$(this).find(':selected').text())+']';
+                   $(this).attr('name',name);
+                    $(this).attr('name',$(this).find(':selected').text());*/
+                    var data = $(element).parent().parent().parent().parent().parent().parent().parent().parent().parent().data('data');
+                    var value = $(this).val();
+                    $(this).parent().parent().find('input.preciounidad').val(data[value]);
+                    var value = $(this).parent().parent().find('input.preciounidad').val();
+                    var qty = $(this).parent().parent().find('input.cantidad').val();
+                    if(!isNaN(value) && !isNaN(qty)){
+                        $(this).parent().parent().find('input.subtotal').val(value*qty);
+                    }
+                });
+            },
+            after_remove: function (collection, element) {
+                var total = 0;
+                $("input.subtotal").each(function(){
+                    if(!isNaN($(this).val())){
+                       total+= Number($(this).val());
+                    }
+                });
+                $("input.total").val(total);
+            },
+            add: '<a href="#" id="{{formCotizacion.vars.name}}_add_button"  >Agregar Nuevo</a>',
+            init_with_n_elements: 1,
+            add_at_the_end: true,
+            // here is the magic!
+            elements_selector: 'tr.producto',
+            elements_parent_selector: '%id% tbody'
+        });
+        
+        
+        $("#Cotizacion_correo").click(function () {
+            $("#mail").show();
+            $("#Datos_data").val($("#formCotizacion").serialize());
+            console.log($("#formCotizacion").serializeArray());
+        });
+        
+        $("#Cotizacion_pagar").click(function () {
+            $("input[name='amount']").val($("input.total").val());
+            $("#pago").show();
+        });
+        
+        $("#befectivo").click(function(){
+            $(this).parent().parent().parent().hide();
+            $("#efectivo").show();
+            $("#Efectivo_data").val($("#formCotizacion").serialize());
+        });
+        
+        $(".close").click(function () {
+            $("#mail").hide();
+            $("#pago").hide();
+            $("#efectivo").hide();
+        });
+        
+        $(window).click(function (event) {
+            if (event.target.id == $("#mail").attr('id')) {
+                $("#mail").hide();
+            }else  if (event.target.id == $("#pago").attr('id')) {
+                $("#pago").hide();
+            }else if (event.target.id == $("#efectivo").attr('id')) {
+                $("#efectivo").hide();
+            }
+        });
+        
+        $("thead").parent().change(function(){
+           var total = 0;
+           
+           $("input.subtotal").each(function(){
+               if(!isNaN($(this).val())){
+                   total+= Number($(this).val());
+                }
+                console.log(total);
+           });
+           $("input.total").val(total);
+        });
+        
+        $("#Cotizacion_envio").change(function(){
+            var data = $("#Cotizacion_envio").parent().parent().parent().parent().data('data');
+            var value = $(this).val();
+            $("#Cotizacion_costoenvio").val(data[value]);
+            $("input.total").val(Number($("input.total").val())+ Number(data[value]));
+            
+        });
+        
+        
+    </script>
+{% endblock %}

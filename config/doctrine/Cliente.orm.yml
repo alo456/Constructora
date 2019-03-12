@@ -1,0 +1,45 @@
+App\Entity\Cliente:
+    type: entity
+    table: Cliente
+    oneToMany:
+        ordenes:
+            targetEntity: App\Entity\Orden
+            mappedBy: cliente
+    id:
+        id:
+            type: guid
+            id: true
+            generate:
+                strategy: UUID
+    fields: 
+            rol:
+                type: string
+                length: 255
+            nombre:
+                type: string
+                length: 255
+            apellidos:
+                type: string
+                length: 255 
+            nacimiento:
+                type: date
+                nullable: true
+            telefono:
+                type: string
+                length: 255
+                nullable: true
+            correo:
+                type: string
+                length: 255
+                nullable: true
+            contrasena:
+                type: string
+                length: 255
+                nullable: true
+            direccion:
+                type: string
+                length: 255
+                nullable: true
+            descuento:
+                type: float
+                nullable: true

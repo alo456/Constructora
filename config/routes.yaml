@@ -1,0 +1,11 @@
+galeria:
+    path: /galeria
+    controller: App\Controller\GlobalController::galeria
+
+cotizador:
+    path: /cotizador
+    controller: App\Controller\GlobalController::cotizador
+
+crudTest:
+    path: /crud/crear
+    controller: App\Controller\CrudRecursoController::CrearRecurso

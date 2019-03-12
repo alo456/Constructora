@@ -1,0 +1,31 @@
+App\Entity\RecursosPorOrden:
+    type: entity
+    table: RecursosPorOrden
+    manyToOne:
+        orden:
+            targetEntity: App\Entity\Orden
+            inversedBy: recursos
+            joinColumn:
+                name: orden_id
+                referencedColumnName: id   
+                
+        recurso:
+            targetEntity: App\Entity\Recurso
+            inversedBy: orden
+            joinColumn: 
+                name: recurso_id
+                referencedColumnName: id   
+        
+    id:
+        id:
+            type: guid
+            id: true
+            generate:
+                strategy: UUID
+    fields: 
+        
+            cantidad:
+                type: float
+            subtotal:
+                type: float
+            
