@@ -17,22 +17,6 @@ use Symfony\Component\HttpFoundation\Request;
 class GlobalController extends Controller {
 
     public function galeria() {
-        $result = exec("python test.py C:\wamp64\www\Construrama");
-        var_dump($result);
-        $result_array = json_decode($result);
-        var_dump($result_array);
-        die;
-        foreach($result_array as $row){
-            echo $row . "<BR>";
-        }
-        die;
-        $directory = $this->get('kernel')->getProjectDir() . '/public/test.py';
-        var_dump($directory);
-        $data = array('as', 'df', 'gh');
-        $result = exec("python test.py \tmp");
-        //$result = shell_exec('python C:\wamp64\www\Construrama/public/test.py');
-        $resultData = json_decode($result);
-        var_dump($resultData, $result);
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
 //        $servicios = $qb->select('s.nombre, s.precio')
